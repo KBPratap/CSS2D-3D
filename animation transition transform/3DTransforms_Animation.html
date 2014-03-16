@@ -1,0 +1,411 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Cube 3D</title>
+    <style type="text/css">
+        .container
+        {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            -moz-perspective: 1000px;
+            -ms-perspective: 1000px;
+            -o-perspective: 1000px;
+            -webkit-perspective: 1000px;
+            perspective: 1000px;
+            margin: 100px auto;
+        }
+
+        #cube
+        {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+            border: 1px solid gray;
+            -moz-transform: translateZ(-100px);
+            -ms-transform: translateZ(-100px);
+            -o-transform: translateZ(-100px);
+            -webkit-transform: translateZ(-100px);
+            transform: translateZ(-100px);
+            /*-moz-transition: linear 1s;
+            -o-transition: linear 1s;
+            -webkit-transition: linear 1s;
+            transition: linear 1s;*/
+        }
+
+
+            #cube > p
+            {
+                width: 196px;
+                height: 196px;
+                display: block;
+                position: absolute;
+                border: 2px solid black;
+                font-size: 5em;
+                text-align: center;
+                vertical-align: middle;
+                margin: 0px;
+                background-color: rgba(200,200,200,0.85);
+            }
+
+            #cube.noBackface > p
+            {
+                -moz-backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+            }
+
+            #cube.animate
+            {
+                -moz-animation: diagonalRotate 10s linear infinite;
+                -o-animation: diagonalRotate 10s linear infinite;
+                -webkit-animation: diagonalRotate 10s linear infinite;
+                animation: diagonalRotate 10s linear infinite;
+            }
+
+                #cube.animate:hover
+                {
+                    -moz-animation-play-state: paused;
+                    -o-animation-play-state: paused;
+                    -webkit-animation-play-state: paused;
+                    animation-play-state: paused;
+                }
+    </style>
+    <style type="text/css">
+        /* rotate interactions */
+
+        #cube.show-front
+        {
+            -moz-transform: translateZ(-100px) rotateY(0deg);
+            -ms-transform: translateZ(-100px) rotateY(0deg);
+            -o-transform: translateZ(-100px) rotateY(0deg);
+            -webkit-transform: translateZ(-100px) rotateY(0deg);
+            transform: translateZ(-100px) rotateY(0deg);
+        }
+
+        #cube.show-back
+        {
+            -moz-transform: translateZ(-100px) rotateX(180deg);
+            -ms-transform: translateZ(-100px) rotateX(180deg);
+            -o-transform: translateZ(-100px) rotateX(180deg);
+            -webkit-transform: translateZ(-100px) rotateX(180deg);
+            transform: translateZ(-100px) rotateX(180deg);
+        }
+
+        #cube.show-right
+        {
+            -moz-transform: translateZ(-100px) rotateY(-90deg);
+            -ms-transform: translateZ(-100px) rotateY(-90deg);
+            -o-transform: translateZ(-100px) rotateY(-90deg);
+            -webkit-transform: translateZ(-100px) rotateY(-90deg);
+            transform: translateZ(-100px) rotateY(-90deg);
+        }
+
+        #cube.show-left
+        {
+            -moz-transform: translateZ(-100px) rotateY(90deg);
+            -ms-transform: translateZ(-100px) rotateY(90deg);
+            -o-transform: translateZ(-100px) rotateY(90deg);
+            -webkit-transform: translateZ(-100px) rotateY(90deg);
+            transform: translateZ(-100px) rotateY(90deg);
+        }
+
+        #cube.show-top
+        {
+            -moz-transform: translateZ(-100px) rotateX(-90deg);
+            -ms-transform: translateZ(-100px) rotateX(-90deg);
+            -o-transform: translateZ(-100px) rotateX(-90deg);
+            -webkit-transform: translateZ(-100px) rotateX(-90deg);
+            transform: translateZ(-100px) rotateX(-90deg);
+        }
+
+        #cube.show-bottom
+        {
+            -moz-transform: translateZ(-100px) rotateX(90deg);
+            -ms-transform: translateZ(-100px) rotateX(90deg);
+            -o-transform: translateZ(-100px) rotateX(90deg);
+            -webkit-transform: translateZ(-100px) rotateX(90deg);
+            transform: translateZ(-100px) rotateX(90deg);
+        }
+    </style>
+    <style type="text/css">
+        /*build cube faces*/
+
+        #cube .front
+        {
+            -moz-transform: rotateY(0deg) translateZ(100px);
+            -ms-transform: rotateY(0deg) translateZ(100px);
+            -o-transform: rotateY(0deg) translateZ(100px);
+            -webkit-transform: rotateY(0deg) translateZ(100px);
+            transform: rotateY(0deg) translateZ(100px);
+        }
+
+        #cube .back
+        {
+            -moz-transform: rotateX(180deg) translateZ(100px);
+            -ms-transform: rotateX(180deg) translateZ(100px);
+            -o-transform: rotateX(180deg) translateZ(100px);
+            -webkit-transform: rotateX(180deg) translateZ(100px);
+            transform: rotateX(180deg) translateZ(100px);
+        }
+
+        #cube .right
+        {
+            -moz-transform: rotateY(90deg) translateZ(100px);
+            -ms-transform: rotateY(90deg) translateZ(100px);
+            -o-transform: rotateY(90deg) translateZ(100px);
+            -webkit-transform: rotateY(90deg) translateZ(100px);
+            transform: rotateY(90deg) translateZ(100px);
+        }
+
+        #cube .left
+        {
+            -moz-transform: rotateY(-90deg) translateZ(100px);
+            -ms-transform: rotateY(-90deg) translateZ(100px);
+            -o-transform: rotateY(-90deg) translateZ(100px);
+            -webkit-transform: rotateY(-90deg) translateZ(100px);
+            transform: rotateY(-90deg) translateZ(100px);
+        }
+
+        #cube .top
+        {
+            -moz-transform: rotateX(90deg) translateZ(100px);
+            -ms-transform: rotateX(90deg) translateZ(100px);
+            -o-transform: rotateX(90deg) translateZ(100px);
+            -webkit-transform: rotateX(90deg) translateZ(100px);
+            transform: rotateX(90deg) translateZ(100px);
+        }
+
+        #cube .bottom
+        {
+            -moz-transform: rotateX(-90deg) translateZ(100px);
+            -ms-transform: rotateX(-90deg) translateZ(100px);
+            -o-transform: rotateX(-90deg) translateZ(100px);
+            -webkit-transform: rotateX(-90deg) translateZ(100px);
+            transform: rotateX(-90deg) translateZ(100px);
+        }
+    </style>
+    <style type="text/css">
+        /*animation scheme*/
+        @-webkit-keyframes diagonalRotate
+        {
+            from
+            {
+                -webkit-transform: rotate3D(1,1,-1,0deg);
+                transform: rotate3D(1,1,-1,0deg);
+            }
+
+            10%
+            {
+                -webkit-transform: rotate3D(1,1,-1,90deg);
+                transform: rotate3D(1,1,-1,90deg);
+            }
+
+            20%
+            {
+                -webkit-transform: rotate3D(1,1,-1,180deg);
+                transform: rotate3D(1,1,-1,180deg);
+            }
+
+            30%
+            {
+                -webkit-transform: rotate3D(1,1,-1,270deg);
+                transform: rotate3D(1,1,-1,270deg);
+            }
+
+            40%
+            {
+                -webkit-transform: rotate3D(1,1,-1,360deg);
+                transform: rotate3D(1,1,-1,360deg);
+            }
+
+            55%
+            {
+                -webkit-transform: rotate3D(-1,1,1,90deg);
+                transform: rotate3D(-1,1,1,90deg);
+            }
+
+            70%
+            {
+                -webkit-transform: rotate3D(-1,1,1,180deg);
+                transform: rotate3D(-1,1,1,180deg);
+            }
+
+            85%
+            {
+                -webkit-transform: rotate3D(-1,1,1,270deg);
+                transform: rotate3D(-1,1,1,270deg);
+            }
+
+            to
+            {
+                -webkit-transform: rotate3D(-1,1,1,360deg);
+                transform: rotate3D(-1,1,1,360deg);
+            }
+        }
+
+        @-moz-keyframes diagonalRotate
+        {
+            from
+            {
+                -moz-transform: rotate3D(1,1,-1,0deg);
+                transform: rotate3D(1,1,-1,0deg);
+            }
+
+            25%
+            {
+                -moz-transform: rotate3D(1,1,-1,180deg);
+                transform: rotate3D(1,1,-1,180deg);
+            }
+
+            50%
+            {
+                -moz-transform: rotate3D(1,1,-1,360deg);
+                transform: rotate3D(1,1,-1,360deg);
+            }
+
+            75%
+            {
+                -moz-transform: rotate3D(-1,1,1,180deg);
+                transform: rotate3D(-1,1,1,180deg);
+            }
+
+            to
+            {
+                -moz-transform: rotate3D(-1,1,1,360deg);
+                transform: rotate3D(-1,1,1,360deg);
+            }
+        }
+
+        @keyframes diagonalRotate
+        {
+            from
+            {
+                -moz-transform: rotate3D(1,1,-1,0deg);
+                -ms-transform: rotate3D(1,1,-1,0deg);
+                -o-transform: rotate3D(1,1,-1,0deg);
+                -webkit-transform: rotate3D(1,1,-1,0deg);
+                transform: rotate3D(1,1,-1,0deg);
+            }
+
+            25%
+            {
+                -moz-transform: rotate3D(1,1,-1,180deg);
+                -ms-transform: rotate3D(1,1,-1,180deg);
+                -o-transform: rotate3D(1,1,-1,180deg);
+                -webkit-transform: rotate3D(1,1,-1,180deg);
+                transform: rotate3D(1,1,-1,180deg);
+            }
+
+            50%
+            {
+                -moz-transform: rotate3D(1,1,-1,360deg);
+                -ms-transform: rotate3D(1,1,-1,360deg);
+                -o-transform: rotate3D(1,1,-1,360deg);
+                -webkit-transform: rotate3D(1,1,-1,360deg);
+                transform: rotate3D(1,1,-1,360deg);
+            }
+
+            75%
+            {
+                -moz-transform: rotate3D(-1,1,1,180deg);
+                -ms-transform: rotate3D(-1,1,1,180deg);
+                -o-transform: rotate3D(-1,1,1,180deg);
+                -webkit-transform: rotate3D(-1,1,1,180deg);
+                transform: rotate3D(-1,1,1,180deg);
+            }
+
+            to
+            {
+                -moz-transform: rotate3D(-1,1,1,360deg);
+                -ms-transform: rotate3D(-1,1,1,360deg);
+                -o-transform: rotate3D(-1,1,1,360deg);
+                -webkit-transform: rotate3D(-1,1,1,360deg);
+                transform: rotate3D(-1,1,1,360deg);
+            }
+        }
+    </style>
+    <style type="text/css">
+        section.toolkit
+        {
+            /* float: left;*/
+            font-family: Arial;
+            /*position: absolute;
+            top: 5px;
+            left: 5px;
+            display:block;*/
+        }
+
+            section.toolkit article
+            {
+                /*border: solid black 1px;*/
+                padding: 5px;
+            }
+
+            section.toolkit button
+            {
+                padding: 5px;
+                font-family: Verdana, Geneva, 'DejaVu Sans', sans-serif;
+            }
+    </style>
+
+    <script type="text/javascript">
+        function addClass(e) {
+            var cube = document.getElementById('cube');
+            removeClass();
+            if (e.target) {
+                cube.classList.add(e.target.className);
+            }
+        }
+        function toggleClass(e) {
+            var cube = document.getElementById('cube');
+            if (e.target) {
+                cube.classList.toggle(e.target.className);
+            }
+        }
+        function removeClass() {
+            var classes = ["show-top", "show-bottom", "show-back", "show-right", "show-left", "show-front"]
+            var cube = document.getElementById('cube');
+            classes.forEach(function (str, idx, o) {
+                cube.classList.remove(str);
+            });
+        }
+
+    </script>
+</head>
+<body>    
+    <section class="container">
+        <div id="cube" class="animate noBackface">
+            <p id="P1" class="front">1</p>
+            <p id="P2" class="back">2</p>
+            <p id="P3" class="right">3</p>
+            <p id="P4" class="left">4</p>
+            <p id="P5" class="top">5</p>
+            <p id="p6" class="bottom">6</p>
+        </div>
+    </section>
+    
+    <section class="toolkit">
+        <hr />
+        <article id="faces">
+            <h1>SHOW FACE</h1>
+            <button class="show-top" onclick="addClass(event)">show Top</button>
+            <button class="show-bottom" onclick="addClass(event)">show Bottom</button>
+            <button class="show-back" onclick="addClass(event)">show Back</button>
+            <button class="show-right" onclick="addClass(event)">show Right</button>
+            <button class="show-left" onclick="addClass(event)">show Left</button>
+            <button class="show-front" onclick="addClass(event)">show Front</button>
+        </article>
+        <hr />
+        <article id="toggle">
+            <h1>TOGGLE</h1>
+            <button id="toggle-animation" class="animate" onclick="toggleClass(event)">animation</button>
+            <button id="toggle-backface-visibility" class="noBackface" onclick="toggleClass(event)">backface visibility</button>
+        </article>
+        <hr />
+    </section>
+
+</body>
+</html>
